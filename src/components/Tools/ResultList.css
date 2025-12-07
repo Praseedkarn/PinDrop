@@ -1,0 +1,44 @@
+.results-list {
+  margin-top: 20px;
+}
+
+.results-title {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.results-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.result-item {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.result-item:hover {
+  background: #f0f0f0;
+}
+
+.result-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.result-coordinates {
+  color: #666;
+  font-family: monospace;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-style: italic;
+}

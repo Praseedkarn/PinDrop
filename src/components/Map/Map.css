@@ -1,0 +1,136 @@
+/* src/components/Map/Map.css */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.world-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Temporary marker for visual feedback */
+.temporary-marker {
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Map click mode indicator */
+.map-click-mode-indicator {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease;
+  max-width: 90%;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.click-mode-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.blinking-dot {
+  width: 12px;
+  height: 12px;
+  background: #ff6b6b;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+.click-mode-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.click-mode-hint {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  font-style: italic;
+}
+
+@keyframes blink {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.3; 
+    transform: scale(0.8);
+  }
+}
+
+/* When in click mode, show crosshair cursor */
+.world-map.crosshair-enabled {
+  cursor: crosshair !important;
+}
+
+/* Custom marker styles */
+.custom-marker {
+  transition: transform 0.2s ease;
+}
+
+.custom-marker:hover {
+  transform: scale(1.1);
+}
+
+/* Popup styles */
+.leaflet-popup-content {
+  min-width: 180px;
+}
+
+.pin-popup h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.pin-popup p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .map-click-mode-indicator {
+    top: 10px;
+    padding: 10px 16px;
+  }
+  
+  .click-mode-text {
+    font-size: 0.9rem;
+  }
+  
+  .click-mode-hint {
+    font-size: 0.75rem;
+  }
+}

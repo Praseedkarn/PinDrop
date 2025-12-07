@@ -1,19 +1,14 @@
-// src/App.tsx
+// src/pages/Home.tsx
 import { useState, useEffect } from 'react';
-import { createNewPin, Pin, AppSettings } from './types';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { useLocalStorage } from './hooks/useLocalStorage';
-import WorldMap from './components/Map/WorldMap';
-import PinList from './components/Pins/PinList';
-import PinForm from './components/Pins/PinForm';
-import StatsPanel from './components/Stats/StatsPanel';
-import Header from './components/UI/Header';
-import Sidebar from './components/UI/Sidebar';
-import AddPinModal from './components/UI/AddPinModal';
-import './styles/globals.css';
-import './App.css';
-import ConverterPage from './pages/ConverterPage';
-import HomePage from './pages/Home';
+import { createNewPin, Pin, AppSettings } from '../types';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import WorldMap from '../components/Map/WorldMap';
+import PinList from '../components/Pins/PinList';
+import PinForm from '../components/Pins/PinForm';
+import StatsPanel from '../components/Stats/StatsPanel';
+import Header from '../components/UI/Header';
+import Sidebar from '../components/UI/Sidebar';
+import './Home.css';
 
 const defaultSettings: AppSettings = {
   theme: 'light',
@@ -27,16 +22,14 @@ const defaultSettings: AppSettings = {
   defaultView: 'map'
 };
 
-function MainApp() {
+export default function HomePage() {
   const { data, addPin, updatePin, deletePin, exportData, importData } = useLocalStorage();
   const [selectedPin, setSelectedPin] = useState<Pin | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [isAddingPin, setIsAddingPin] = useState(false);
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
-  const [mapClickMode, setMapClickMode] = useState(false);
-  const [showAddPinModal, setShowAddPinModal] = useState(false); // Add this state
-  const navigate = useNavigate();
+  const [mapClickMode, setMapClickMode] = useState(false); // Add this state
 
   // Load settings on app start
   useEffect(() => {
@@ -77,8 +70,6 @@ function MainApp() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mapClickMode) {
         setMapClickMode(false);
-        // Show notification
-        showNotification('Map click mode cancelled', '#f59e0b');
       }
     };
 
@@ -88,27 +79,8 @@ function MainApp() {
     };
   }, [mapClickMode]);
 
-  // Helper function for notifications
-  const showNotification = (message: string, color: string = '#667eea') => {
-    const notification = document.createElement('div');
-    notification.textContent = message;
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${color};
-      color: white;
-      padding: 12px 20px;
-      border-radius: 10px;
-      z-index: 9999;
-      animation: fadeOut 2s forwards;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 2000);
-  };
-
   const handleMapClick = (latlng: { lat: number; lng: number }) => {
+    // Only handle if we're in map click mode
     if (mapClickMode) {
       const country = getCountryFromCoordinates(latlng.lat, latlng.lng);
       const newPin = createNewPin(latlng, country);
@@ -116,12 +88,10 @@ function MainApp() {
       setSelectedPin(newPin);
       setShowForm(true);
       setIsAddingPin(true);
-      setMapClickMode(false);
-      showNotification('Location selected! Fill in the details', '#10b981');
+      setMapClickMode(false); // Turn off map click mode after selection
       
-      return false;
+      return;
     }
-    return false;
   };
 
   const handlePinClick = (pin: Pin) => {
@@ -130,45 +100,40 @@ function MainApp() {
     setIsAddingPin(false);
   };
 
-  // Updated: Show modal instead of confirm
   const handleAddPinClick = () => {
-    setShowAddPinModal(true);
-  };
-
-  // Handle map click selection from modal
-  const handleMapClickSelection = () => {
-    setShowAddPinModal(false);
-    setMapClickMode(true);
-    setShowForm(false);
-    setSelectedPin(null);
-    setIsAddingPin(true);
+    // Ask user how they want to add the pin
+    const useMapClick = window.confirm(
+      "How would you like to add a new pin?\n\n" +
+      "Click 'OK' to select location on the map\n" +
+      "Click 'Cancel' to enter details manually"
+    );
     
-    // Show notification after modal closes
-    setTimeout(() => {
-      showNotification('🗺️ Click anywhere on the map to select location', '#667eea');
-    }, 300);
-  };
-
-  // Handle manual entry selection from modal
-  const handleManualEntrySelection = () => {
-    setShowAddPinModal(false);
-    setSelectedPin({
-      id: '',
-      name: '',
-      lat: 0,
-      lng: 0,
-      country: '',
-      city: '',
-      status: 'wishlist',
-      notes: '',
-      date: new Date().toISOString().split('T')[0],
-      photo: '',
-      rating: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    });
-    setShowForm(true);
-    setIsAddingPin(true);
+    if (useMapClick) {
+      // Enable map click mode
+      setMapClickMode(true);
+      setShowForm(false);
+      setSelectedPin(null);
+      setIsAddingPin(true);
+    } else {
+      // Manual entry
+      setSelectedPin({
+        id: '',
+        name: '',
+        lat: 0,
+        lng: 0,
+        country: '',
+        city: '',
+        status: 'wishlist',
+        notes: '',
+        date: new Date().toISOString().split('T')[0],
+        photo: '',
+        rating: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      setShowForm(true);
+      setIsAddingPin(true);
+    }
   };
 
   const handleHomeClick = () => {
@@ -187,7 +152,6 @@ function MainApp() {
     link.download = `pindrop-backup-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    showNotification('✅ Data exported successfully!', '#10b981');
   };
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,10 +161,10 @@ function MainApp() {
       reader.onload = (e) => {
         const result = e.target?.result as string;
         if (importData(result)) {
-          showNotification('✅ Data imported successfully!', '#10b981');
+          alert('✅ Data imported successfully!');
           event.target.value = '';
         } else {
-          showNotification('❌ Failed to import data. Invalid format.', '#ef4444');
+          alert('❌ Failed to import data. Invalid format.');
         }
       };
       reader.readAsText(file);
@@ -210,10 +174,8 @@ function MainApp() {
   const handleFormSubmit = (pinData: Omit<Pin, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (selectedPin?.id) {
       updatePin(selectedPin.id, pinData);
-      showNotification('✅ Pin updated successfully!', '#10b981');
     } else {
       addPin(pinData);
-      showNotification('📍 Pin added successfully!', '#667eea');
     }
     setShowForm(false);
     setSelectedPin(null);
@@ -244,12 +206,8 @@ function MainApp() {
     }
   };
 
-  const handleConverterClick = () => {
-    navigate('/converter');
-  };
-
   return (
-    <div className="app">
+    <div className="home-page">
       <Header
         onExport={handleExport}
         onImport={handleImport}
@@ -298,7 +256,7 @@ function MainApp() {
               onPinClick={handlePinClick}
               onMapClick={handleMapClick}
               settings={settings}
-              mapClickMode={mapClickMode}
+              mapClickMode={mapClickMode} // Pass the mapClickMode prop
             />
           ) : (
             <div className="list-view-container">
@@ -388,7 +346,7 @@ function MainApp() {
           {/* Floating action button */}
           {viewMode === 'map' && !showForm && !mapClickMode && (
             <button 
-              className="floating-action-btn pulse"
+              className="floating-add-btn"
               onClick={handleAddPinClick}
               title="Add new pin"
             >
@@ -397,14 +355,6 @@ function MainApp() {
           )}
         </div>
       </div>
-
-      {/* Add Pin Modal */}
-      <AddPinModal
-        isOpen={showAddPinModal}
-        onClose={() => setShowAddPinModal(false)}
-        onManualEntry={handleManualEntrySelection}
-        onMapClick={handleMapClickSelection}
-      />
 
       {data.pins.length > 0 && viewMode === 'map' && !showForm && (
         <div className="corner-stats">
@@ -427,14 +377,5 @@ function MainApp() {
         </div>
       )}
     </div>
-  );
-}
-
-export default function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<MainApp />} />
-      <Route path="/converter" element={<ConverterPage />} />
-    </Routes>
   );
 }
