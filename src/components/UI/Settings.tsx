@@ -1,46 +1,81 @@
-// src/components/UI/Settings.tsx
-import { useState } from 'react';
+// src/components/UI/Settings.tsx - UPDATED
+import { useState, useEffect } from 'react';
+import { AppSettings } from '../../types';
 import './Settings.css';
 
 interface SettingsProps {
   isOpen: boolean;
   onClose: () => void;
+  onSave?: (settings: AppSettings) => void; // Add this prop
+  currentSettings?: AppSettings; // Add this prop
 }
 
-export default function Settings({ isOpen, onClose }: SettingsProps) {
-  const [settings, setSettings] = useState({
-    mapTheme: 'default',
+export default function Settings({ isOpen, onClose, onSave, currentSettings }: SettingsProps) {
+  const [settings, setSettings] = useState<AppSettings>({
+    theme: 'light',
+    language: 'en',
+    notifications: true,
+    autoSave: true,
+    mapTheme: 'standard',
     pinAnimation: true,
     autoBackup: true,
-    backupInterval: 'weekly',
-    defaultView: 'map',
-    enableNotifications: true,
-    measurementUnit: 'km',
-    language: 'en'
+    backupInterval: 7,
+    defaultView: 'map'
   });
 
-  const handleSettingChange = (key: keyof typeof settings, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  // Load current settings when component opens
+  useEffect(() => {
+    if (currentSettings) {
+      setSettings(currentSettings);
+    }
+  }, [currentSettings, isOpen]);
+
+  const handleSettingChange = (key: keyof AppSettings, value: any) => {
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+    
     // Save to localStorage
-    localStorage.setItem('pindrop-settings', JSON.stringify({
-      ...settings,
-      [key]: value
-    }));
+    localStorage.setItem('pindrop-settings', JSON.stringify(newSettings));
+    
+    // Apply theme change immediately
+    if (key === 'theme') {
+      applyTheme(value);
+    }
+    
+    // Notify parent component
+    if (onSave) {
+      onSave(newSettings);
+    }
+  };
+
+  const applyTheme = (theme: string) => {
+    // Remove existing theme classes
+    document.documentElement.classList.remove('light-mode', 'dark-mode');
+    // Add new theme class
+    document.documentElement.classList.add(`${theme}-mode`);
   };
 
   const handleReset = () => {
-    const defaultSettings = {
-      mapTheme: 'default',
+    const defaultSettings: AppSettings = {
+      theme: 'light',
+      language: 'en',
+      notifications: true,
+      autoSave: true,
+      mapTheme: 'standard',
       pinAnimation: true,
       autoBackup: true,
-      backupInterval: 'weekly',
-      defaultView: 'map',
-      enableNotifications: true,
-      measurementUnit: 'km',
-      language: 'en'
+      backupInterval: 7,
+      defaultView: 'map'
     };
+    
     setSettings(defaultSettings);
     localStorage.setItem('pindrop-settings', JSON.stringify(defaultSettings));
+    applyTheme('light');
+    
+    if (onSave) {
+      onSave(defaultSettings);
+    }
+    
     alert('Settings reset to defaults!');
   };
 
@@ -57,18 +92,39 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
         </div>
 
         <div className="settings-content">
+          {/* APPEARANCE SECTION - ADDED */}
           <div className="settings-section">
-            <h3>🗺️ Map Settings</h3>
+            <h3>🎨 Appearance</h3>
+            <div className="setting-item">
+              <label>Theme</label>
+              <div className="theme-buttons">
+                <button
+                  type="button"
+                  className={`theme-btn ${settings.theme === 'light' ? 'active' : ''}`}
+                  onClick={() => handleSettingChange('theme', 'light')}
+                >
+                  ☀️ Light
+                </button>
+                <button
+                  type="button"
+                  className={`theme-btn ${settings.theme === 'dark' ? 'active' : ''}`}
+                  onClick={() => handleSettingChange('theme', 'dark')}
+                >
+                  🌙 Dark
+                </button>
+              </div>
+            </div>
+
             <div className="setting-item">
               <label>Map Theme</label>
               <select 
                 value={settings.mapTheme}
                 onChange={(e) => handleSettingChange('mapTheme', e.target.value)}
               >
-                <option value="default">Default (OpenStreetMap)</option>
-                <option value="satellite">Satellite View</option>
-                <option value="dark">Dark Mode</option>
-                <option value="topographic">Topographic</option>
+                <option value="standard">🗺️ Standard</option>
+                <option value="satellite">🛰️ Satellite</option>
+                <option value="dark">🌙 Dark Map</option>
+                <option value="topographic">🗻 Topographic</option>
               </select>
             </div>
 
@@ -99,16 +155,15 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
 
             {settings.autoBackup && (
               <div className="setting-item">
-                <label>Backup Interval</label>
-                <select 
+                <label>Backup Interval (days)</label>
+                <input
+                  type="range"
+                  min="1"
+                  max="30"
                   value={settings.backupInterval}
-                  onChange={(e) => handleSettingChange('backupInterval', e.target.value)}
-                >
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="manual">Manual Only</option>
-                </select>
+                  onChange={(e) => handleSettingChange('backupInterval', parseInt(e.target.value))}
+                />
+                <span className="interval-value">{settings.backupInterval} days</span>
               </div>
             )}
           </div>
@@ -127,17 +182,6 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
             </div>
 
             <div className="setting-item">
-              <label>Measurement Unit</label>
-              <select 
-                value={settings.measurementUnit}
-                onChange={(e) => handleSettingChange('measurementUnit', e.target.value)}
-              >
-                <option value="km">Kilometers</option>
-                <option value="miles">Miles</option>
-              </select>
-            </div>
-
-            <div className="setting-item">
               <label>Language</label>
               <select 
                 value={settings.language}
@@ -147,8 +191,6 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
                 <option value="es">Español</option>
                 <option value="fr">Français</option>
                 <option value="de">Deutsch</option>
-                <option value="hi">हिन्दी</option>
-                <option value="ja">日本語</option>
               </select>
             </div>
           </div>
@@ -159,8 +201,8 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
               <label>
                 <input 
                   type="checkbox"
-                  checked={settings.enableNotifications}
-                  onChange={(e) => handleSettingChange('enableNotifications', e.target.checked)}
+                  checked={settings.notifications}
+                  onChange={(e) => handleSettingChange('notifications', e.target.checked)}
                 />
                 Enable Notifications
               </label>
@@ -203,7 +245,7 @@ export default function Settings({ isOpen, onClose }: SettingsProps) {
 
         <div className="settings-footer">
           <button className="btn-primary" onClick={onClose}>
-            Save & Close
+            Done
           </button>
         </div>
       </div>

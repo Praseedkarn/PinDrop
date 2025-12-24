@@ -1,0 +1,177 @@
+/* src/components/UI/MobileBlocker.css */
+
+.mobile-blocker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.mobile-blocker-content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-blocker-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.mobile-blocker-content h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+.mobile-blocker-content p {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.mobile-blocker-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+}
+
+.feature-text {
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.mobile-blocker-instruction {
+  font-size: 1rem !important;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #6366f1;
+}
+
+.mobile-blocker-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.mobile-blocker-btn {
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.mobile-blocker-btn:first-child {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.mobile-blocker-btn:first-child:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+}
+
+.mobile-blocker-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-blocker-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-blocker-current-device {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-blocker-current-device p {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: #94a3b8;
+}
+
+.mobile-blocker-current-device strong {
+  color: white;
+  font-weight: 700;
+}
+
+/* Responsive adjustments for the blocker itself */
+@media (max-width: 500px) {
+  .mobile-blocker-content {
+    padding: 30px 20px;
+  }
+  
+  .mobile-blocker-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .mobile-blocker-icon {
+    font-size: 48px;
+  }
+  
+  .feature-item {
+    padding: 10px 16px;
+  }
+}

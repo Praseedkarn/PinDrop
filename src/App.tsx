@@ -10,10 +10,10 @@ import StatsPanel from './components/Stats/StatsPanel';
 import Header from './components/UI/Header';
 import Sidebar from './components/UI/Sidebar';
 import AddPinModal from './components/UI/AddPinModal';
+import  Settings  from './components/UI/Settings';
+import MobileBlocker from './components/UI/MobileBlocker';
 import './styles/globals.css';
 import './App.css';
-import ConverterPage from './pages/ConverterPage';
-import HomePage from './pages/Home';
 
 const defaultSettings: AppSettings = {
   theme: 'light',
@@ -36,6 +36,7 @@ function MainApp() {
   const [settings, setSettings] = useState<AppSettings>(defaultSettings);
   const [mapClickMode, setMapClickMode] = useState(false);
   const [showAddPinModal, setShowAddPinModal] = useState(false); // Add this state
+  const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
 
   // Load settings on app start
@@ -237,26 +238,39 @@ function MainApp() {
     return '';
   };
 
-  const handleSettingsChange = (newSettings: AppSettings) => {
-    setSettings(newSettings);
-    if (newSettings.defaultView && newSettings.defaultView !== settings.defaultView) {
-      setViewMode(newSettings.defaultView);
-    }
-  };
+ // In your App.tsx - Add this function
+const handleSettingsChange = (newSettings: AppSettings) => {
+  setSettings(newSettings);
+  
+  // Apply theme immediately
+  document.documentElement.classList.remove('light-mode', 'dark-mode');
+  document.documentElement.classList.add(`${newSettings.theme}-mode`);
+  
+  // If default view changed, update view mode
+  if (newSettings.defaultView && newSettings.defaultView !== settings.defaultView) {
+    setViewMode(newSettings.defaultView);
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('pindrop-settings', JSON.stringify(newSettings));
+};
 
   const handleConverterClick = () => {
     navigate('/converter');
   };
 
   return (
-    <div className="app">
-      <Header
+    <>
+      <MobileBlocker/>
+        <div className="app">
+          <Header
         onExport={handleExport}
         onImport={handleImport}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         onSettingsChange={handleSettingsChange}
         currentSettings={settings}
+        onSettingsClick={() => setShowSettings(true)}
       />
       
       <div className="main-content">
@@ -370,7 +384,7 @@ function MainApp() {
           {mapClickMode && viewMode === 'map' && (
             <div className="map-click-indicator">
               <div className="indicator-content">
-                <span className="blinking-marker">📍</span>
+                {/* <span className="blinking-marker">📍</span> */}
                 <span className="indicator-text">
                   <strong>Map Click Mode Active</strong>
                   <small>Click anywhere on the map to select location</small>
@@ -408,15 +422,8 @@ function MainApp() {
 
       {data.pins.length > 0 && viewMode === 'map' && !showForm && (
         <div className="corner-stats">
-          <div className="stat-bubble" title={`${data.pins.length} pins`}>
-            <span className="stat-icon">📍</span>
-            <span className="stat-count">{data.pins.length}</span>
-          </div>
-          {settings.autoBackup && (
-            <div className="backup-indicator" title="Auto-backup enabled">
-              💾
-            </div>
-          )}
+          
+          
         </div>
       )}
 
@@ -427,6 +434,7 @@ function MainApp() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
@@ -434,7 +442,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<MainApp />} />
-      <Route path="/converter" element={<ConverterPage />} />
+      {/* <Route path="/converter" element={<ConverterPage />} /> */}
     </Routes>
   );
 }

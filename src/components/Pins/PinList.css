@@ -1,337 +1,310 @@
 /* src/components/Pins/PinList.css */
 
-/* ===== MAIN CONTAINER ===== */
 .pin-list-container {
+  background: var(--bg-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-base);
 }
 
-/* ===== HEADER ===== */
+.pin-list-container:hover {
+  border-color: var(--primary);
+}
+
 .pin-list-header {
-  padding: 20px;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
 }
 
-.pin-list-header h3 {
-  margin: 0 0 16px 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #111827;
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.header-content h3 {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-.pin-list-header h3::before {
-  content: '📍';
-  font-size: 1.2rem;
+.pin-count {
+  color: var(--primary);
+  font-weight: 600;
 }
 
-/* ===== CONTROLS ===== */
 .pin-list-controls {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .search-box {
   position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
   width: 100%;
-  padding: 10px 12px 10px 36px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: white;
-  color: #374151;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.search-input::placeholder {
-  color: #9ca3af;
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) 40px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  transition: all var(--transition-base);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--spacing-md);
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.clear-search {
+  position: absolute;
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filter-controls {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-sm);
+  align-items: center;
 }
 
 .filter-select,
 .sort-select {
-  flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background: white;
-  color: #374151;
-  font-size: 0.85rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.875rem;
   cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
+  transition: all var(--transition-base);
 }
 
 .filter-select:focus,
 .sort-select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--primary);
 }
 
-.filter-select option,
-.sort-select option {
-  background: white;
-  color: #374151;
-}
-
-/* ===== SCROLLABLE AREA ===== */
 .pin-list-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  background: #f9fafb;
+  padding: var(--spacing-lg);
 }
 
 .pin-list-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
-/* Scrollbar */
-.pin-list-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.pin-list-scroll::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-.pin-list-scroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 2px;
-}
-
-/* ===== EMPTY STATE ===== */
-.pin-list-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-  color: #6b7280;
-}
-
-.empty-icon {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
-  color: #d1d5db;
-}
-
-.pin-list-empty h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #374151;
-}
-
-.pin-list-empty p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* ===== PIN ITEM ===== */
 .pin-list-item {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
 }
 
 .pin-list-item:hover {
-  border-color: #667eea;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Status indicator */
-.pin-list-item.visited {
-  border-left: 4px solid #10b981;
+.pin-list-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
 }
 
-.pin-list-item.wishlist {
-  border-left: 4px solid #f59e0b;
+.pin-list-item:hover::before {
+  opacity: 1;
 }
 
-/* Pin Header */
 .pin-item-header {
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 8px;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .pin-status-icon {
+  font-size: 1.25rem;
   flex-shrink: 0;
-  font-size: 1rem;
-  margin-top: 2px;
 }
 
 .pin-name {
   flex: 1;
   margin: 0;
   font-size: 1rem;
-  font-weight: 500;
-  color: #111827;
-  line-height: 1.4;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-/* Actions */
 .pin-actions {
   display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.pin-list-item:hover .pin-actions {
-  opacity: 1;
+  gap: var(--spacing-xs);
 }
 
 .icon-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 4px;
-  background: #f3f4f6;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
+  transition: all var(--transition-base);
 }
 
 .icon-btn:hover {
-  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
-.icon-btn.edit-btn:hover {
-  background: #dbeafe;
-  color: #3b82f6;
+.edit-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
-.icon-btn.delete-btn:hover {
-  background: #fee2e2;
+.delete-btn:hover {
   color: #ef4444;
+  border-color: #ef4444;
 }
 
-/* Pin Details */
 .pin-item-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 0.8rem;
-  color: #6b7280;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
 }
 
-.pin-location {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: 500;
-}
-
+.pin-location,
 .pin-date,
 .pin-rating {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xs);
 }
 
-/* Pin Notes */
+.pin-notes-container {
+  margin-bottom: var(--spacing-sm);
+}
+
 .pin-notes {
-  margin: 8px 0 0 0;
-  font-size: 0.85rem;
-  color: #4b5563;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 var(--spacing-xs) 0;
 }
 
-/* ===== FOOTER ===== */
+.read-more {
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pin-photo-preview {
+  margin-bottom: var(--spacing-sm);
+}
+
+.photo-placeholder {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--glass-bg);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pin-tags {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.visited-tag {
+  background: rgba(34, 197, 94, 0.15);
+  color: #10b981;
+}
+
+.wishlist-tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
 .pin-list-footer {
-  padding: 12px 20px;
-  background: white;
-  border-top: 1px solid #e5e7eb;
-  font-size: 0.8rem;
-  color: #6b7280;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
 }
 
 .footer-stats {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 .stat-item strong {
-  color: #374151;
+  color: var(--text-primary);
   font-weight: 600;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .pin-list-container {
-    border-radius: 0;
-  }
-  
-  .pin-list-header {
-    padding: 16px;
-  }
-  
-  .pin-list-scroll {
-    padding: 12px;
-  }
-  
-  .pin-list-item {
-    padding: 12px;
-  }
-  
-  .filter-controls {
-    flex-direction: column;
-  }
-  
-  .pin-actions {
-    opacity: 1;
-  }
 }

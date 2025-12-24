@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Settings from './Settings';
 import FeaturesGuide from './FeaturesGuide';
-import PrivacyPolicy from './PrivacyPolicy';
 import './Header.css';
 import { AppSettings } from '../../types';
 
@@ -13,7 +12,8 @@ interface HeaderProps {
   viewMode: 'map' | 'list';
   onViewModeChange: (mode: 'map' | 'list') => void;
   onSettingsChange?: (newSettings: AppSettings) => void; // Fixed: Added optional prop
-  currentSettings?: AppSettings; // Fixed: Added optional prop
+  currentSettings?: AppSettings;
+  onSettingsClick?:()=>void;
 }
 
 export default function Header({ 
@@ -52,38 +52,7 @@ export default function Header({
             </Link>
           </div>
           
-          {isMainPage && (
-            <nav className="nav-links">
-              <Link to="/converter" className="nav-link">
-                <span className="nav-icon">🔄</span>
-                <span className="nav-text">Coordinate Converter</span>
-              </Link>
-              <button 
-                className="nav-link"
-                onClick={() => setShowFeatures(true)}
-                aria-label="View features"
-              >
-                <span className="nav-icon">✨</span>
-                <span className="nav-text">Features</span>
-              </button>
-              <button 
-                className="nav-link"
-                onClick={() => setShowFeatures(true)}
-                aria-label="View guide"
-              >
-                <span className="nav-icon">📖</span>
-                <span className="nav-text">Guide</span>
-              </button>
-              <button 
-                className="nav-link"
-                onClick={() => setShowPrivacy(true)}
-                aria-label="View privacy policy"
-              >
-                <span className="nav-icon">🔒</span>
-                <span className="nav-text">Privacy</span>
-              </button>
-            </nav>
-          )}
+          
         </div>
 
         {isMainPage && (
@@ -156,17 +125,7 @@ export default function Header({
               <span className="action-label">Settings</span>
             </button>
 
-            {isMainPage && (
-              <button 
-                className="action-btn help-btn"
-                onClick={() => setShowFeatures(true)}
-                title="Get help and view guide"
-                aria-label="Open help"
-              >
-                <span className="action-icon">❓</span>
-                <span className="action-label">Help</span>
-              </button>
-            )}
+           
 
             {/* Optional: Add a converter page link if not already on it */}
             {!isConverterPage && !isMainPage && (
@@ -187,19 +146,13 @@ export default function Header({
       <Settings 
         isOpen={showSettings} 
         onClose={() => setShowSettings(false)}
-        //onSave={onSettingsChange}
-        //currentSettings={currentSettings}
+        onSave={onSettingsChange}
+        currentSettings={currentSettings}
       />
       
-      <FeaturesGuide 
-        isOpen={showFeatures} 
-        onClose={() => setShowFeatures(false)} 
-      />
+     
       
-      <PrivacyPolicy 
-        isOpen={showPrivacy} 
-        onClose={() => setShowPrivacy(false)} 
-      />
+      
     </>
   );
 }

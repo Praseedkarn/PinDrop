@@ -88,10 +88,7 @@ export default function Sidebar({ children, onAddPin, onHomeClick }: SidebarProp
           
           {!isCollapsed && (
             <div className="sidebar-info">
-              <p className="data-info">
-                <span className="info-label">Data stored locally</span>
-                <span className="info-value">🔒 Secure</span>
-              </p>
+             
               <p className="version-info">v1.0.0</p>
             </div>
           )}
